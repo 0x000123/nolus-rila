@@ -67,4 +67,67 @@ wget https://raw.githubusercontent.com/Nolus-Protocol/nolus-networks/main/testne
 mv ./genesis.json ~/.nolus/config/genesis.json
 ```
 
-### Peers, Pruning, Indexer
+## Set up the minimum gas price and Peers/Seeds/Filter peers/MaxPeers
+```python
+PEERS="$(curl -s "https://raw.githubusercontent.com/Nolus-Protocol/nolus-networks/main/testnet/nolus-rila/persistent_peers.txt")"
+```
+Set them in the ~/.nolus/config/config.toml file:
+```python
+sed -i.bak -e "s/^persistent_peers *=.*/persistent_peers = \"$PEERS\"/" ~/.nolus/config/config.toml
+```
+
+### minimum gas price:
+```python
+sed -i.bak -e "s/^minimum-gas-prices *=.*/minimum-gas-prices = \"0.0025unls\"/;" ~/.nolus/config/app.toml
+sed -i -e "s/^filter_peers *=.*/filter_peers = \"true\"/" $HOME/.nolus/config/config.toml
+external_address=$(wget -qO- eth0.me) 
+sed -i.bak -e "s/^external_address *=.*/external_address = \"$external_address:26656\"/" $HOME/.nolus/config/config.toml
+sed -i.bak -e "s/^seeds =.*/seeds = \"$seeds\"/" $HOME/.nolus/config/config.toml
+sed -i 's/max_num_inbound_peers =.*/max_num_inbound_peers = 100/g' $HOME/.nolus/config/config.toml
+sed -i 's/max_num_outbound_peers =.*/max_num_outbound_peers = 100/g' $HOME/.nolus/config/config.toml
+```
+
+### Pruning (optional)
+```python
+pruning="custom" && \
+pruning_keep_recent="100" && \
+pruning_keep_every="0" && \
+pruning_interval="10" && \
+sed -i -e "s/^pruning *=.*/pruning = \"$pruning\"/" ~/.nolus/config/app.toml && \
+sed -i -e "s/^pruning-keep-recent *=.*/pruning-keep-recent = \"$pruning_keep_recent\"/" ~/.nolus/config/app.toml && \
+sed -i -e "s/^pruning-keep-every *=.*/pruning-keep-every = \"$pruning_keep_every\"/" ~/.nolus/config/app.toml && \
+sed -i -e "s/^pruning-interval *=.*/pruning-interval = \"$pruning_interval\"/" ~/.nolus/config/app.toml
+```
+
+### Indexer (optional)
+```python
+indexer="null" && \
+sed -i -e "s/^indexer *=.*/indexer = \"$indexer\"/" $HOME/.humans/config/config.toml
+```
+
+## Create a Service FILE
+```python
+sudo tee /etc/systemd/system/humansd.service > /dev/null <<EOF
+[Unit]
+Description=humans
+After=network-online.target
+
+[Service]
+User=$USER
+ExecStart=$(which humansd) start
+Restart=on-failure
+RestartSec=3
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
+EOF
+```
+
+### Start node
+```
+sudo systemctl daemon-reload && sudo systemctl enable nolusd
+sudo systemctl restart nolusd && sudo journalctl -u nolusd -f -o cat
+```
+
+# DONE
