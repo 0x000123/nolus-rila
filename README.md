@@ -18,4 +18,4 @@ The current Nolus testnet, Rila, launched on December 09 at 16:22 EEST. The curr
 
 [Run a Full Node](https://github.com/0x000123/nolus-rila/blob/main/fullnode.md)
 
-[Run a Validator]
+[Run a Validator](https://github.com/0x000123/nolus-rila/blob/main/validator.md)
