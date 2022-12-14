@@ -107,14 +107,14 @@ sed -i -e "s/^indexer *=.*/indexer = \"$indexer\"/" $HOME/.nolus/config/config.t
 
 ## Create a Service FILE
 ```python
-sudo tee /etc/systemd/system/humansd.service > /dev/null <<EOF
+sudo tee /etc/systemd/system/nolusd.service > /dev/null <<EOF
 [Unit]
-Description=humans
+Description=nolusd
 After=network-online.target
 
 [Service]
 User=$USER
-ExecStart=$(which humansd) start
+ExecStart=$(which nolusd) start
 Restart=on-failure
 RestartSec=3
 LimitNOFILE=65535
