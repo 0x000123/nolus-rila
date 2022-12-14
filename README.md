@@ -16,6 +16,6 @@ The current Nolus testnet, Rila, launched on December 09 at 16:22 EEST. The curr
 
 🚰 To get Rila testnet tokens, use [Rila Testnet Faucet](https://faucet-rila.nolus.io/)
 
-[Run a Full Node]
+[Run a Full Node](https://github.com/0x000123/nolus-rila/blob/main/fullnode.md)
 
 [Run a Validator]
